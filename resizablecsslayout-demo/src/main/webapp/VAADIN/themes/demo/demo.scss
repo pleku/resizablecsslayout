@@ -1,0 +1,17 @@
+@import "../valo/valo.scss";
+
+@mixin demo {
+	@include valo;
+	
+	.v-absolutelayout{
+		border: 1px solid green;
+		.v-csslayout.resizable {
+			border: 1px solid orchid;
+			padding: 0;
+		}
+		.v-csslayout {
+			padding: 1px;
+			border: 1px solid black;
+		}
+	}
+}

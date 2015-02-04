@@ -1,0 +1,71 @@
+@mixin resizablecsslayout {
+  .v-csslayout.resizable {
+    position: relative;
+    &.resizing {
+      overflow: visible;
+      .drag-overlay {
+        border: 1px solid red;
+        position: absolute;
+        z-index: 10;
+      }
+    }
+    .tlc, .ts, .trc, .rs, .brc, .bs, .blc, .ls {
+      background-color: transparent;
+      display: block;
+      overflow: visible;
+      position: absolute;
+    }
+    .ts {
+      cursor: ns-resize;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      .tlc {
+        cursor: nwse-resize;
+        top: 0;
+        left: 0;
+        z-index: 3;
+      }
+      .trc {
+        cursor: nesw-resize;
+        top: 0;
+        right: 0;
+        z-index: 3;
+      }
+    }
+    .rs {
+      cursor: ew-resize;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+    .ls {
+      cursor: ew-resize;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .bs {
+      cursor: ns-resize;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 2;
+      .blc {
+        cursor: nesw-resize;
+        bottom: 0;
+        left: 0;
+        z-index: 3;
+      }
+      .brc {
+        cursor: nwse-resize;
+        bottom: 0;
+        right: 0;
+        z-index: 3;
+      }
+    }
+  }
+}

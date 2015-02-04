@@ -1,0 +1,12 @@
+@import "../valo/valo.scss";
+
+@mixin demo {
+	@include valo;
+	
+	.v-csslayout.resizable {
+		border: 1px solid red;
+		.drag-root.resizing {
+		
+		}
+	}
+}
