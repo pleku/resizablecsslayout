@@ -43,8 +43,10 @@ public class DemoUI extends UI {
                 if (cancelResize.getValue()) {
                     gridWrapper.cancelResize();
                 } else {
+                    // used to make the grid columns resize
                     grid.getColumn("name").setExpandRatio(
-                            grid.getColumn("name").getExpandRatio() + 1);
+                            grid.getColumn("name").getExpandRatio() == 2 ? 3
+                                    : 2);
                 }
             }
         });
@@ -104,7 +106,9 @@ public class DemoUI extends UI {
         }
         Grid grid = new Grid();
         grid.setContainerDataSource(container);
-        grid.getColumn("name").setExpandRatio(1);
+        grid.getColumn("name").setExpandRatio(2);
+        grid.getColumn("amount").setExpandRatio(1);
+        grid.getColumn("count").setExpandRatio(1);
         grid.setSizeFull();
         grid.setSelectionMode(SelectionMode.NONE);
         return grid;

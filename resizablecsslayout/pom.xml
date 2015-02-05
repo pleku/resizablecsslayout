@@ -5,7 +5,7 @@
 	<groupId>com.vaadin.pekka</groupId>
 	<artifactId>resizablecsslayout</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>ResizableCssLayout Add-on</name>
 
 	<properties>
