@@ -40,7 +40,8 @@ public class DemoUI extends UI {
 
             @Override
             public void resizeEnd(ResizeEndEvent event) {
-                if (cancelResize.getValue()) {
+                if (!gridWrapper.isAutoAcceptResize()
+                        && cancelResize.getValue()) {
                     gridWrapper.cancelResize();
                 } else {
                     // used to make the grid columns resize
