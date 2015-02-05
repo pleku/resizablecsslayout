@@ -4,6 +4,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener;
@@ -11,10 +12,9 @@ import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -28,10 +28,11 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        final ResizableCssLayout component = new ResizableCssLayout();
-        component.setHeight("200px");
-        component.setWidth("200px");
-        component.addResizeListener(new ResizeListener() {
+        final Grid grid = createGrid();
+        final ResizableCssLayout gridWrapper = new ResizableCssLayout();
+        gridWrapper.setHeight("400px");
+        gridWrapper.setWidth("400px");
+        gridWrapper.addResizeListener(new ResizeListener() {
 
             @Override
             public void resizeStart(ResizeStartEvent event) {
@@ -40,59 +41,111 @@ public class DemoUI extends UI {
             @Override
             public void resizeEnd(ResizeEndEvent event) {
                 if (cancelResize.getValue()) {
-                    component.cancelResize();
+                    gridWrapper.cancelResize();
+                } else {
+                    grid.getColumn("name").setExpandRatio(
+                            grid.getColumn("name").getExpandRatio() + 1);
                 }
             }
         });
-
-        Button button = new Button("Toggle resizable",
-                new Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(ClickEvent event) {
-                        component.setResizable(!component.isResizable());
-                    }
-                });
-
-        button.setWidth("100%");
-        component.addComponent(button);
+        gridWrapper.addComponent(grid);
 
         final AbsoluteLayout absoluteLayout = new AbsoluteLayout();
-        absoluteLayout.setCaption("AbsoluteLayout 80% x 80%");
-        absoluteLayout.setWidth("80%");
-        absoluteLayout.setHeight("80%");
-        CustomComponent wrapper = new CustomComponent(component);
-        wrapper.setSizeUndefined();
-        absoluteLayout.addComponent(wrapper, "top:100px;left:100px;");
+        absoluteLayout.setSizeFull();
+        absoluteLayout.addComponent(gridWrapper, "top:100px;left:100px;");
 
         final CheckBox autoAcceptResize = new CheckBox("Auto accept resize",
-                component.isAutoAcceptResize());
+                gridWrapper.isAutoAcceptResize());
         autoAcceptResize.addValueChangeListener(new ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                component.setAutoAcceptResize(autoAcceptResize.getValue());
+                gridWrapper.setAutoAcceptResize(autoAcceptResize.getValue());
                 cancelResize.setEnabled(!autoAcceptResize.getValue());
             }
         });
 
         cancelResize = new CheckBox("Cancel resize on server");
-        cancelResize.setEnabled(!component.isAutoAcceptResize());
+        cancelResize.setEnabled(!gridWrapper.isAutoAcceptResize());
 
-        final VerticalLayout options = new VerticalLayout();
+        final CheckBox toggleResizable = new CheckBox("Toggle resizable");
+        toggleResizable.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                gridWrapper.setResizable(toggleResizable.getValue());
+            }
+        });
+        toggleResizable.setValue(true);
+
+        final HorizontalLayout options = new HorizontalLayout();
+        options.addComponent(toggleResizable);
         options.addComponent(autoAcceptResize);
         options.addComponent(cancelResize);
         options.setWidth(null);
         options.setSpacing(true);
-        options.setMargin(true);
 
-        final HorizontalLayout layout = new HorizontalLayout();
+        final VerticalLayout layout = new VerticalLayout();
         layout.addComponent(options);
         layout.addComponent(absoluteLayout);
         layout.setComponentAlignment(absoluteLayout, Alignment.MIDDLE_LEFT);
         layout.setExpandRatio(absoluteLayout, 1.0F);
         layout.setStyleName("demoContentLayout");
         layout.setSizeFull();
+        layout.setSpacing(true);
         setContent(layout);
+    }
+
+    private Grid createGrid() {
+        BeanItemContainer<GridExampleBean> container = new BeanItemContainer<GridExampleBean>(
+                GridExampleBean.class);
+        for (int i = 0; i < 1000; i++) {
+            container.addItem(new GridExampleBean("Bean " + i, i * i, i / 10d));
+        }
+        Grid grid = new Grid();
+        grid.setContainerDataSource(container);
+        grid.getColumn("name").setExpandRatio(1);
+        grid.setSizeFull();
+        grid.setSelectionMode(SelectionMode.NONE);
+        return grid;
+    }
+
+    public class GridExampleBean {
+        private String name;
+        private int count;
+        private double amount;
+
+        public GridExampleBean() {
+        }
+
+        public GridExampleBean(String name, int count, double amount) {
+            this.name = name;
+            this.count = count;
+            this.amount = amount;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public void setAmount(double amount) {
+            this.amount = amount;
+        }
     }
 }

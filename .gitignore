@@ -15,6 +15,7 @@
 .DS_Store
 
 styles.css
+*.cache
 rebel.xml
 
 *.iml

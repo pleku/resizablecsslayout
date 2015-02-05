@@ -7,7 +7,15 @@
 		border: 1px solid green;
 		.v-csslayout.resizable {
 			border: 1px solid orchid;
-			padding: 0;
+			padding: 1px;
+			&.resizing,
+			&.resizing > div {
+				-webkit-user-select: none;  /* Chrome all / Safari all */
+				-moz-user-select: none;     /* Firefox all */
+				-ms-user-select: none;      /* IE 10+ */
+				-o-user-select: none;
+				user-select: none;
+			}
 		}
 		.v-csslayout {
 			padding: 1px;

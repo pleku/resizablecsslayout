@@ -76,9 +76,9 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      * {@link #isAutoAcceptResize()} and there is a resize pending
      * {@link #isResizing()}, the resize can be cancelled with this method from
      * a
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeListener}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener}
      * when the the
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeEndEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent}
      * events are fired.
      * <p>
      * If this method is not triggered, the resize will be accepted.
@@ -204,9 +204,9 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      * client side widget will accept the resize immediately and the resize
      * can't be cancelled. When set to <code>false</code>, the resize can be
      * cancelled during a
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeEndEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent}
      * with a
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeListener}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener}
      * by using {@link #cancelResize()}.
      */
     public void setAutoAcceptResize(boolean autoAcceptResize) {
@@ -248,7 +248,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
 
     /**
      * Returns the location where the most recent
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeStartEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent}
      * happened.
      */
     public ResizeLocation getLatestResizeLocation() {
@@ -295,9 +295,9 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
 
     /**
      * Adds a resize listener for
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeStartEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent}
      * and
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeEndEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent}
      * for this component.
      */
     public void addResizeListener(ResizeListener listener) {
@@ -326,11 +326,10 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
 
     /**
      * Interface for listening to
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeStartEvent}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent}
      * and
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout.ResizeEndEvent}
-     * in
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent}
+     * in {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout}
      * component.
      */
     public interface ResizeListener extends Serializable {
@@ -373,8 +372,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
 
         /**
          * The current client side height of the
-         * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout}
-         * .
+         * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout} .
          */
         public int getHeight() {
             return height;
@@ -382,8 +380,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
 
         /**
          * The current client side width of the
-         * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout}
-         * .
+         * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout} .
          */
         public int getWidth() {
             return width;
@@ -394,7 +391,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      * Event for resize end, fired when the user has released the mouse button.
      * This event can be used for cancelling the resize, if the component is not
      * in auto accept resize mode (
-     * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout#isAutoAcceptResize()}
+     * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout#isAutoAcceptResize()}
      * ).
      */
     public static class ResizeEndEvent extends Event {
@@ -409,8 +406,8 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         }
 
         /**
-         * The new resized height or proposed height (pending
-         * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout#isAutoAcceptResize()}
+         * The new resized height or proposed height in pixels (pending
+         * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout#isAutoAcceptResize()}
          * ) for the event source.
          */
         public int getHeight() {
@@ -418,8 +415,8 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         }
 
         /**
-         * The new resized width or proposed width (pending
-         * {@link com.kemira.ep.frontend.ui.desktop.components.ResizableCssLayout#isAutoAcceptResize()}
+         * The new resized width or proposed width in pixels (pending
+         * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout#isAutoAcceptResize()}
          * ) for the event source.
          */
         public int getWidth() {
