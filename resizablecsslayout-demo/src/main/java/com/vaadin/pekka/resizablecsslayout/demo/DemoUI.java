@@ -9,15 +9,18 @@ import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent;
+import com.vaadin.pekka.resizablecsslayout.client.ResizeLocation;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 @Theme("demo")
 @Title("ResizableCssLayout Add-on Demo")
@@ -25,11 +28,16 @@ import com.vaadin.ui.VerticalLayout;
 public class DemoUI extends UI {
 
     private CheckBox cancelResize;
+    private ResizableCssLayout gridWrapper;
+
+    public enum AvailableResizeLocations {
+        All, Corners, Sides, Top_Left, Top, Top_Right, Right, Bottom_Right, Bottom, Bottom_Left, Left;
+    }
 
     @Override
     protected void init(VaadinRequest request) {
         final Grid grid = createGrid();
-        final ResizableCssLayout gridWrapper = new ResizableCssLayout();
+        gridWrapper = new ResizableCssLayout();
         gridWrapper.setHeight("400px");
         gridWrapper.setWidth("400px");
         gridWrapper.addResizeListener(new ResizeListener() {
@@ -85,6 +93,7 @@ public class DemoUI extends UI {
         options.addComponent(toggleResizable);
         options.addComponent(autoAcceptResize);
         options.addComponent(cancelResize);
+        options.addComponent(createResizeLocations());
         options.setWidth(null);
         options.setSpacing(true);
 
@@ -97,6 +106,38 @@ public class DemoUI extends UI {
         layout.setSizeFull();
         layout.setSpacing(true);
         setContent(layout);
+    }
+
+    private ComboBox createResizeLocations() {
+        final ComboBox comboBox = new ComboBox("Available Resize Locations:");
+        comboBox.addStyleName(ValoTheme.COMBOBOX_TINY);
+        comboBox.addItems(AvailableResizeLocations.values());
+        comboBox.select(AvailableResizeLocations.All);
+        comboBox.setNullSelectionAllowed(false);
+        comboBox.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                AvailableResizeLocations value = (AvailableResizeLocations) event
+                        .getProperty().getValue();
+                switch (value) {
+                case All:
+                    gridWrapper.setAllLocationsResizable();
+                    break;
+                case Corners:
+                    gridWrapper.setCornersResizable();
+                    break;
+                case Sides:
+                    gridWrapper.setSidesResizable();
+                    break;
+                default:
+                    gridWrapper.setResizeLocations(ResizeLocation.valueOf(value
+                            .toString().toUpperCase()));
+                    break;
+                }
+            }
+        });
+        return comboBox;
     }
 
     private Grid createGrid() {

@@ -1,10 +1,11 @@
 package com.vaadin.pekka.resizablecsslayout.client;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -37,7 +38,9 @@ import com.vaadin.client.ui.VCssLayout;
 public class ResizableVCssLayout extends VCssLayout implements
         HasResizableLayoutHandlers {
 
+    private static final String RESIZABLE_STYLE_NAME = "resizable";
     private static final int DEFAULT_DRAG_SIZE_PIXELS = 10;
+    private static final String UNUSED_STYLE_NAME = "unused";
     private DivElement topLeftCorner;
     private DivElement topRightCorner;
     private DivElement bottomLeftCorner;
@@ -53,6 +56,7 @@ public class ResizableVCssLayout extends VCssLayout implements
     private boolean autoAcceptResize = true;
     private Element boundaryElement;
     private int dragSizePixels;
+    private HashSet<ResizeLocation> resizeLocations = new HashSet<ResizeLocation>();
 
     @SuppressWarnings("serial")
     private static final Map<ResizeLocation, String> locationToCursorMap = new HashMap<ResizeLocation, String>() {
@@ -116,15 +120,59 @@ public class ResizableVCssLayout extends VCssLayout implements
         Event.sinkEvents(rightSide, Event.MOUSEEVENTS);
         Event.sinkEvents(bottomSide, Event.MOUSEEVENTS);
         Event.sinkEvents(leftSide, Event.MOUSEEVENTS);
+    }
 
-        Event.setEventListener(topLeftCorner, resizeHandler);
-        Event.setEventListener(topRightCorner, resizeHandler);
-        Event.setEventListener(bottomRightCorner, resizeHandler);
-        Event.setEventListener(bottomLeftCorner, resizeHandler);
-        Event.setEventListener(topSide, resizeHandler);
-        Event.setEventListener(leftSide, resizeHandler);
-        Event.setEventListener(rightSide, resizeHandler);
-        Event.setEventListener(bottomSide, resizeHandler);
+    protected void setupResizeLocations() {
+        if (resizeLocations.contains(ResizeLocation.TOP_LEFT)) {
+            enableResizeLocation(topLeftCorner);
+        } else {
+            disableResizeLocation(topLeftCorner);
+        }
+        if (resizeLocations.contains(ResizeLocation.TOP_RIGHT)) {
+            enableResizeLocation(topRightCorner);
+        } else {
+            disableResizeLocation(topRightCorner);
+        }
+        if (resizeLocations.contains(ResizeLocation.BOTTOM_RIGHT)) {
+            enableResizeLocation(bottomRightCorner);
+        } else {
+            disableResizeLocation(bottomRightCorner);
+        }
+        if (resizeLocations.contains(ResizeLocation.BOTTOM_LEFT)) {
+            enableResizeLocation(bottomLeftCorner);
+        } else {
+            disableResizeLocation(bottomLeftCorner);
+        }
+        if (resizeLocations.contains(ResizeLocation.TOP)) {
+            enableResizeLocation(topSide);
+        } else {
+            disableResizeLocation(topSide);
+        }
+        if (resizeLocations.contains(ResizeLocation.LEFT)) {
+            enableResizeLocation(leftSide);
+        } else {
+            disableResizeLocation(leftSide);
+        }
+        if (resizeLocations.contains(ResizeLocation.RIGHT)) {
+            enableResizeLocation(rightSide);
+        } else {
+            disableResizeLocation(rightSide);
+        }
+        if (resizeLocations.contains(ResizeLocation.BOTTOM)) {
+            enableResizeLocation(bottomSide);
+        } else {
+            disableResizeLocation(bottomSide);
+        }
+    }
+
+    private void enableResizeLocation(Element element) {
+        Event.setEventListener(element, resizeHandler);
+        element.removeClassName(UNUSED_STYLE_NAME);
+    }
+
+    private void disableResizeLocation(Element element) {
+        Event.setEventListener(element, null);
+        element.addClassName(UNUSED_STYLE_NAME);
     }
 
     /**
@@ -138,13 +186,13 @@ public class ResizableVCssLayout extends VCssLayout implements
                 getElement().appendChild(leftSide);
                 getElement().appendChild(rightSide);
                 getElement().appendChild(bottomSide);
-                getElement().addClassName("resizable");
+                getElement().addClassName(RESIZABLE_STYLE_NAME);
             } else {
                 getElement().removeChild(topSide);
                 getElement().removeChild(leftSide);
                 getElement().removeChild(rightSide);
                 getElement().removeChild(bottomSide);
-                getElement().removeClassName("resizable");
+                getElement().removeClassName(RESIZABLE_STYLE_NAME);
             }
         }
     }
@@ -154,6 +202,22 @@ public class ResizableVCssLayout extends VCssLayout implements
      */
     public boolean getResizable() {
         return resizable;
+    }
+
+    /**
+     * Set the used resize locations.
+     */
+    public void setResizeLocations(ArrayList<ResizeLocation> resizeLocations) {
+        this.resizeLocations.clear();
+        this.resizeLocations.addAll(resizeLocations);
+        setupResizeLocations();
+    }
+
+    /**
+     * Returns the used resize locations.
+     */
+    public HashSet<ResizeLocation> getResizeLocations() {
+        return resizeLocations;
     }
 
     /**
@@ -272,7 +336,6 @@ public class ResizableVCssLayout extends VCssLayout implements
         @Override
         public void onBrowserEvent(Event event) {
             final EventTarget currentTarget = event.getCurrentEventTarget();
-            final EventTarget relatedTarget = event.getRelatedEventTarget();
             final Element target = currentTarget.cast();
             final Element targetParent = target.getParentElement();
             if (resizingX
@@ -280,8 +343,6 @@ public class ResizableVCssLayout extends VCssLayout implements
                     || getElement().equals(targetParent)
                     || (targetParent != null && getElement().equals(
                             targetParent.getParentElement()))) {
-                GWT.log(event.getType() + " " + currentTarget + " "
-                        + relatedTarget);
                 switch (event.getTypeInt()) {
                 case Event.ONMOUSEMOVE:
                     onMouseMove(event);

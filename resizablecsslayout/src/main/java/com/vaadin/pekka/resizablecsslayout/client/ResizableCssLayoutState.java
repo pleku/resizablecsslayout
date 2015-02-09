@@ -1,5 +1,7 @@
 package com.vaadin.pekka.resizablecsslayout.client;
 
+import java.util.ArrayList;
+
 import com.vaadin.shared.annotations.DelegateToWidget;
 
 @SuppressWarnings("serial")
@@ -17,4 +19,7 @@ public class ResizableCssLayoutState extends
 
     @DelegateToWidget
     public boolean autoAcceptResize = true;
+
+    @DelegateToWidget
+    public ArrayList<ResizeLocation> resizeLocations = new ArrayList<ResizeLocation>();
 }

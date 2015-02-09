@@ -2,6 +2,8 @@ package com.vaadin.pekka.resizablecsslayout;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
 
 import com.vaadin.pekka.resizablecsslayout.client.ResizableCssLayoutClientRpc;
 import com.vaadin.pekka.resizablecsslayout.client.ResizableCssLayoutServerRpc;
@@ -60,6 +62,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      */
     public ResizableCssLayout() {
         registerRpc(rpc);
+        setAllLocationsResizable();
     }
 
     /**
@@ -281,6 +284,56 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      */
     public int getResizeLocationSize() {
         return getState(false).resizeLocationSize;
+    }
+
+    /**
+     * Returns the current resize locations.
+     */
+    public Collection<ResizeLocation> getResizeLocations() {
+        return getState(false).resizeLocations;
+    }
+
+    /**
+     * Sets the available locations for resize drag and drop. By default all
+     * sides and corners are available for resize.
+     * <p>
+     * See {@link #setAllLocationsResizable()}, {@link #setCornersResizable()}
+     * and {@link #setSidesResizable()} for shortcuts.
+     */
+    public void setResizeLocations(Collection<ResizeLocation> resizeLocations) {
+        ResizableCssLayoutState state = getState();
+        state.resizeLocations.clear();
+        state.resizeLocations.addAll(resizeLocations);
+    }
+
+    /**
+     * Shorthand for {@link #setResizeLocations(Collection)}.
+     */
+    public void setResizeLocations(ResizeLocation... resizeLocations) {
+        setResizeLocations(Arrays.asList(resizeLocations));
+    }
+
+    /**
+     * Enables resizing from all sides and corners.
+     */
+    public void setAllLocationsResizable() {
+        setResizeLocations(ResizeLocation.values());
+    }
+
+    /**
+     * Enables resizing from corners only.
+     */
+    public void setCornersResizable() {
+        setResizeLocations(ResizeLocation.TOP_LEFT, ResizeLocation.TOP_RIGHT,
+                ResizeLocation.BOTTOM_LEFT, ResizeLocation.BOTTOM_RIGHT);
+    }
+
+    /**
+     * Enables resizing from sides only.
+     */
+    public void setSidesResizable() {
+        setResizeLocations(ResizeLocation.TOP, ResizeLocation.RIGHT,
+                ResizeLocation.BOTTOM, ResizeLocation.LEFT);
     }
 
     @Override

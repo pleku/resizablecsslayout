@@ -15,6 +15,9 @@
       overflow: visible;
       position: absolute;
     }
+    div.unused {
+      cursor: default !important;
+    }
     .ts {
       cursor: ns-resize;
       top: 0;
