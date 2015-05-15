@@ -3,11 +3,18 @@
 @mixin demo {
 	@include valo;
 	
-	.v-absolutelayout{
+	.v-absolutelayout {
 		border: 1px solid green;
-		.v-csslayout.resizable {
-			&.resizing,
-			&.resizing > div {
+		
+		.v-csslayout > .v-verticallayout {
+			border: 1px solid CornflowerBlue;
+		}
+		
+		&.resizing-child {
+			a,
+			div,
+			input,
+			span {
 				-webkit-user-select: none;  /* Chrome all / Safari all */
 				-moz-user-select: none;     /* Firefox all */
 				-ms-user-select: none;      /* IE 10+ */

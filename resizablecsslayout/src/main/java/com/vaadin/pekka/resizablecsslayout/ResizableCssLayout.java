@@ -106,12 +106,9 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
     }
 
     /**
-     * Updates the new resized size of the component. If the component is inside
-     * a {@link com.vaadin.ui.AbsoluteLayout} and has top/left coordinates and
-     * resizing happened from left/top side or top-right/-left corner.
-     *
-     * TODO Update the right/bottom coordinates when dragging from right/bottom
-     * side or bottom-right/-left corner.
+     * Updates the new resized size of the component. Moves the component if it
+     * is inside a {@link com.vaadin.ui.AbsoluteLayout} and the coordinates need
+     * to be updated.
      */
     protected void internalAccept() {
         HasComponents parentContainer = getParent();
@@ -127,22 +124,35 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         }
 
         if (parentContainer instanceof AbsoluteLayout) {
+            AbsoluteLayout absoluteLayout = (AbsoluteLayout) parentContainer;
             switch (latestResizeLocation) {
-            case LEFT:
-            case BOTTOM_LEFT:
-                moveLeft(initialWidth - pendingWidth,
-                        (AbsoluteLayout) parentContainer, positionHolder);
-                break;
             case TOP_LEFT:
-                moveTop(initialHeight - pendingHeight,
-                        (AbsoluteLayout) parentContainer, positionHolder);
-                moveLeft(initialWidth - pendingWidth,
-                        (AbsoluteLayout) parentContainer, positionHolder);
-                break;
+                moveLeft(initialWidth - pendingWidth, absoluteLayout,
+                        positionHolder);
             case TOP:
+                moveTop(initialHeight - pendingHeight, absoluteLayout,
+                        positionHolder);
+                break;
             case TOP_RIGHT:
-                moveTop(initialHeight - pendingHeight,
-                        (AbsoluteLayout) parentContainer, positionHolder);
+                moveTop(initialHeight - pendingHeight, absoluteLayout,
+                        positionHolder);
+            case RIGHT:
+                moveRight(initialWidth - pendingWidth, absoluteLayout,
+                        positionHolder);
+                break;
+            case BOTTOM_RIGHT:
+                moveRight(initialWidth - pendingWidth, absoluteLayout,
+                        positionHolder);
+            case BOTTOM:
+                moveBottom(initialHeight - pendingHeight, absoluteLayout,
+                        positionHolder);
+                break;
+            case BOTTOM_LEFT:
+                moveBottom(initialHeight - pendingHeight, absoluteLayout,
+                        positionHolder);
+            case LEFT:
+                moveLeft(initialWidth - pendingWidth, absoluteLayout,
+                        positionHolder);
                 break;
             default:
                 break;
@@ -167,13 +177,71 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
     protected void moveTop(int delta, AbsoluteLayout absoluteLayout,
             Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
-        if (position.getTopUnits().equals(Unit.PIXELS)) {
+        if (position.getTopValue() != null
+                && position.getTopUnits().equals(Unit.PIXELS)) {
             float newValue = (position.getTopValue() + delta);
             if (newValue < 0) {
                 newValue = 0;
             }
             position.setTopValue(newValue);
             absoluteLayout.setPosition(positionHolder, position);
+        } else {
+            // position bottom set, NOOP
+        }
+    }
+
+    /**
+     * Adjusts the bottom position for the component when inside a
+     * {@link com.vaadin.ui.AbsoluteLayout} and bottom position was set with
+     * pixels.
+     *
+     * @param delta
+     *            the change of bottom position in pixels
+     * @param the
+     *            absolute layout that contains the component
+     * @param positionHolder
+     *            the component that is inside the absolute layout
+     */
+    protected void moveBottom(int delta, AbsoluteLayout absoluteLayout,
+            Component positionHolder) {
+        ComponentPosition position = absoluteLayout.getPosition(positionHolder);
+        if (position.getBottomValue() != null
+                && position.getBottomUnits().equals(Unit.PIXELS)) {
+            float newValue = (position.getBottomValue() + delta);
+            if (newValue < 0) {
+                newValue = 0;
+            }
+            position.setBottomValue(newValue);
+            absoluteLayout.setPosition(positionHolder, position);
+        } else {
+            // position top used, NOOP
+        }
+    }
+
+    /**
+     * Adjusts the right position for the component when inside a
+     * {@link com.vaadin.ui.AbsoluteLayout} and right position was set with
+     * pixels.
+     *
+     * @param delta
+     *            the change of right position in pixels
+     * @param the
+     *            absolute layout that contains the component
+     * @param positionHolder
+     */
+    protected void moveRight(int delta, AbsoluteLayout absoluteLayout,
+            Component positionHolder) {
+        ComponentPosition position = absoluteLayout.getPosition(positionHolder);
+        if (position.getRightValue() != null
+                && position.getRightUnits().equals(Unit.PIXELS)) {
+            float newValue = (position.getRightValue() + delta);
+            if (newValue < 0) {
+                newValue = 0;
+            }
+            position.setRightValue(newValue);
+            absoluteLayout.setPosition(positionHolder, position);
+        } else {
+            // position left used, NOOP
         }
     }
 
@@ -192,13 +260,16 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
     protected void moveLeft(int delta, AbsoluteLayout absoluteLayout,
             Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
-        if (position.getLeftUnits().equals(Unit.PIXELS)) {
+        if (position.getLeftValue() != null
+                && position.getLeftUnits().equals(Unit.PIXELS)) {
             float newValue = (position.getLeftValue() + delta);
             if (newValue < 0) {
                 newValue = 0;
             }
             position.setLeftValue(newValue);
             absoluteLayout.setPosition(positionHolder, position);
+        } else {
+            // position right set, NOOP
         }
     }
 
