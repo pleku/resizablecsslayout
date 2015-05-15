@@ -59,6 +59,7 @@ public class DemoUI extends UI {
         Layout form = createForm(grid);
         formWrapper = new ResizableCssLayout(form);
         formWrapper.setResizable(true);
+        formWrapper.setCaption("Resize form");
         formWrapper.setHeight("250px");
         formWrapper.setWidth("250px");
 
