@@ -3,11 +3,14 @@
     position: relative;
     &.resizing {
       overflow: visible;
-      .drag-overlay {
-        border: 1px solid red;
-        position: absolute;
-        z-index: 10;
-      }
+    }
+    .drag-overlay {
+      border: 1px solid red;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      position: absolute;
+      z-index: 10;
     }
     .tlc, .ts, .trc, .rs, .brc, .bs, .blc, .ls {
       background-color: transparent;

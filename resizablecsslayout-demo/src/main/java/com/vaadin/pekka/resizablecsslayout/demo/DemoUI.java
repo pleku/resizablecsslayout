@@ -149,8 +149,6 @@ public class DemoUI extends UI {
         Grid grid = new Grid();
         grid.setContainerDataSource(container);
         grid.getColumn("name").setExpandRatio(2);
-        grid.getColumn("amount").setExpandRatio(1);
-        grid.getColumn("count").setExpandRatio(1);
         grid.setSizeFull();
         grid.setSelectionMode(SelectionMode.NONE);
         return grid;

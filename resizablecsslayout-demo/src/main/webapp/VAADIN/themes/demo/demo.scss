@@ -6,8 +6,6 @@
 	.v-absolutelayout{
 		border: 1px solid green;
 		.v-csslayout.resizable {
-			border: 1px solid orchid;
-			padding: 1px;
 			&.resizing,
 			&.resizing > div {
 				-webkit-user-select: none;  /* Chrome all / Safari all */
@@ -16,10 +14,6 @@
 				-o-user-select: none;
 				user-select: none;
 			}
-		}
-		.v-csslayout {
-			padding: 1px;
-			border: 1px solid black;
 		}
 	}
 }

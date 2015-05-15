@@ -15,6 +15,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.VCssLayout;
 
 /**
@@ -361,7 +362,7 @@ public class ResizableVCssLayout extends VCssLayout implements
 
         private void onMouseMove(Event event) {
             if (resizingY) {
-                int clientY = event.getClientY();
+                int clientY = WidgetUtil.getTouchOrMouseClientY(event);
                 if (!isInVerticalBoundary(event)) {
                     // set the size to the edge of the boundary element
                     clientY = clientY < boundaryElement.getAbsoluteTop() ? (boundaryElement
@@ -378,7 +379,7 @@ public class ResizableVCssLayout extends VCssLayout implements
                 event.stopPropagation();
             }
             if (resizingX) {
-                int clientX = event.getClientX();
+                int clientX = WidgetUtil.getTouchOrMouseClientX(event);
                 if (!isInHorizontalBoundary(event)) {
                     // set the size to the edge of the boundary element
                     clientX = clientX < boundaryElement.getAbsoluteLeft() ? (boundaryElement
@@ -448,9 +449,11 @@ public class ResizableVCssLayout extends VCssLayout implements
                 waitingAccept = false;
                 if (accept) {
                     getElement().getStyle().setWidth(
-                            dragOverlayElement.getClientWidth(), Unit.PX);
+                            WidgetUtil.getRequiredWidth(dragOverlayElement),
+                            Unit.PX);
                     getElement().getStyle().setHeight(
-                            dragOverlayElement.getClientHeight(), Unit.PX);
+                            WidgetUtil.getRequiredHeight(dragOverlayElement),
+                            Unit.PX);
                 }
                 resizingX = false;
                 resizingY = false;
@@ -480,8 +483,8 @@ public class ResizableVCssLayout extends VCssLayout implements
                 event.stopPropagation();
                 stopCursorOverride();
                 unmarkBoundaryResizing();
-                fireResizeEnd(dragOverlayElement.getClientWidth(),
-                        dragOverlayElement.getClientHeight());
+                fireResizeEnd(WidgetUtil.getRequiredWidth(dragOverlayElement),
+                        WidgetUtil.getRequiredHeight(dragOverlayElement));
                 if (autoAcceptResize) {
                     acceptResize(true);
                 }
@@ -514,11 +517,11 @@ public class ResizableVCssLayout extends VCssLayout implements
             resizingX = true;
             resizingY = true;
             Style style = dragOverlayElement.getStyle();
-            startHeight = getElement().getClientHeight();
-            startClientY = event.getClientY();
+            startHeight = WidgetUtil.getRequiredHeight(getElement());
+            startClientY = WidgetUtil.getTouchOrMouseClientY(event);
             style.setHeight(startHeight, Unit.PX);
-            startWidth = getElement().getClientWidth();
-            startClientX = event.getClientX();
+            startWidth = WidgetUtil.getRequiredWidth(getElement());
+            startClientX = WidgetUtil.getTouchOrMouseClientX(event);
             style.setWidth(startWidth, Unit.PX);
             if (target.equals(topLeftCorner) || target.equals(topRightCorner)) {
                 revertY = true;
@@ -545,8 +548,8 @@ public class ResizableVCssLayout extends VCssLayout implements
             ResizeLocation resizeLocation;
             resizingY = true;
             Style style = dragOverlayElement.getStyle();
-            startHeight = getElement().getClientHeight();
-            startClientY = event.getClientY();
+            startHeight = WidgetUtil.getRequiredHeight(getElement());
+            startClientY = WidgetUtil.getTouchOrMouseClientY(event);
             style.setHeight(startHeight, Unit.PX);
             if (target.equals(topSide)) {
                 revertY = true;
@@ -566,8 +569,8 @@ public class ResizableVCssLayout extends VCssLayout implements
             ResizeLocation resizeLocation;
             resizingX = true;
             Style style = dragOverlayElement.getStyle();
-            startWidth = getElement().getClientWidth();
-            startClientX = event.getClientX();
+            startWidth = WidgetUtil.getRequiredWidth(getElement());
+            startClientX = WidgetUtil.getTouchOrMouseClientX(event);
             style.setWidth(startWidth, Unit.PX);
             if (target.equals(leftSide)) {
                 revertX = true;
