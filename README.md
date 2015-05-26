@@ -51,6 +51,16 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
  
 ## Release notes
 
+### Version 1.1.0
+- Support keeping aspect ratio when resizing #1
+- Fixed 1px offset error when resizing #3
+- Pressing escape should cancel the resize #4
+- Update the right/bottom coordinates when inside a AbsoluteLayout #5
+- Fixed resize handles being partly hidden behind a full-size Grid component
+
+### Version 1.0.1
+- Fixed invalid javadocs
+	
 ### Version 1.0.0
 - toggle resize mode on/off
 - listener and events for resize start and resize end
