@@ -5,7 +5,7 @@
 	<groupId>com.vaadin.pekka</groupId>
 	<artifactId>resizablecsslayout-demo</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<name>ResizableCssLayout Add-on Demo</name>
 
 	<properties>
