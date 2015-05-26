@@ -59,6 +59,7 @@ public class ResizableVCssLayout extends VCssLayout implements
     private final ResizeHandler resizeHandler;
     private boolean resizable;
     private boolean autoAcceptResize = true;
+    private boolean keepAspectRatio;
     private Element boundaryElement;
     private int dragSizePixels;
     private HashSet<ResizeLocation> resizeLocations = new HashSet<ResizeLocation>();
@@ -238,6 +239,9 @@ public class ResizableVCssLayout extends VCssLayout implements
      * Trigger the auto accept resize mode. When set to <code>true</code>, the
      * component will resize automatically. When set to <code>false</code> the
      * user can accept or cancel the resize with {@link #acceptResize(boolean).
+     * <p>
+     * Default value is <code>true</code>.
+
      */
     public void setAutoAcceptResize(boolean autoAcceptResize) {
         this.autoAcceptResize = autoAcceptResize;
@@ -245,9 +249,31 @@ public class ResizableVCssLayout extends VCssLayout implements
 
     /**
      * Is the component in auto accept resize mode.
+     *
+     * @see #setAutoAcceptResize(boolean)
      */
     public boolean isAutoAcceptResize() {
         return autoAcceptResize;
+    }
+
+    /**
+     * Set the component to keep or not to keep the original (current) aspect
+     * ratio when the user starts the resizing.
+     * <p>
+     * Default is <code>false</code>.
+     */
+    public void setKeepAspectRatio(boolean keepAspectRatio) {
+        this.keepAspectRatio = keepAspectRatio;
+    }
+
+    /**
+     * Does the component keep the original (current) aspect ratio when the user
+     * starts the resizing.
+     * <p>
+     * Default is <code>false</code>.
+     */
+    public boolean isKeepAspectRatio() {
+        return keepAspectRatio;
     }
 
     /**
@@ -380,6 +406,9 @@ public class ResizableVCssLayout extends VCssLayout implements
         }
 
         private void onMouseMove(Event event) {
+            double height = -1.0;
+            double width = -1.0;
+
             if (resizingY) {
                 int clientY = WidgetUtil.getTouchOrMouseClientY(event);
                 if (!isInVerticalBoundary(event)) {
@@ -390,13 +419,13 @@ public class ResizableVCssLayout extends VCssLayout implements
                 }
                 int extraScrollHeight = boundaryElement == null ? 0
                         : boundaryElement.getScrollTop();
-                dragOverlayElement.getStyle().setHeight(
-                        startHeight
-                                + extraScrollHeight
-                                + (revertY ? startClientY - clientY : clientY
-                                        - startClientY), Unit.PX);
+                height = startHeight
+                        + extraScrollHeight
+                        + (revertY ? startClientY - clientY : clientY
+                                - startClientY);
                 event.stopPropagation();
             }
+
             if (resizingX) {
                 int clientX = WidgetUtil.getTouchOrMouseClientX(event);
                 if (!isInHorizontalBoundary(event)) {
@@ -407,13 +436,43 @@ public class ResizableVCssLayout extends VCssLayout implements
                 }
                 int extraScrollWidth = boundaryElement == null ? 0
                         : boundaryElement.getScrollLeft();
-                dragOverlayElement.getStyle().setWidth(
-                        startWidth
-                                + extraScrollWidth
-                                + (revertX ? startClientX - clientX : clientX
-                                        - startClientX), Unit.PX);
+                width = startWidth
+                        + extraScrollWidth
+                        + (revertX ? startClientX - clientX : clientX
+                                - startClientX);
                 event.stopPropagation();
             }
+
+            if (keepAspectRatio && (height > -1.0 || width > 1.0)) {
+                final double wRatio = width / startWidth;
+                final double hRatio = height / startHeight;
+
+                if (height == -1.0) {
+                    height = startHeight * wRatio;
+                } else if (width == -1.0) {
+                    width = startWidth * hRatio;
+                } else {
+                    if (wRatio < hRatio) {
+                        height = startHeight * wRatio;
+                    } else {
+                        width = startWidth * hRatio;
+                    }
+
+                }
+
+                dragOverlayElement.getStyle().setHeight(height, Unit.PX);
+                dragOverlayElement.getStyle().setWidth(width, Unit.PX);
+            }
+
+            else {
+                if (height > -1.0) {
+                    dragOverlayElement.getStyle().setHeight(height, Unit.PX);
+                }
+                if (width > -1.0) {
+                    dragOverlayElement.getStyle().setWidth(width, Unit.PX);
+                }
+            }
+
         }
 
         private boolean isInHorizontalBoundary(Event event) {
@@ -520,6 +579,8 @@ public class ResizableVCssLayout extends VCssLayout implements
                 draggedElement = target;
                 ResizeLocation resizeLocation;
 
+                startWidth = WidgetUtil.getRequiredWidth(getElement());
+                startHeight = WidgetUtil.getRequiredHeight(getElement());
                 if (target.equals(topSide) || target.equals(bottomSide)) {
                     resizeLocation = startVerticalResize(event, target);
                 } else if (target.equals(leftSide) || target.equals(rightSide)) {
@@ -579,13 +640,13 @@ public class ResizableVCssLayout extends VCssLayout implements
             ResizeLocation resizeLocation;
             resizingX = true;
             resizingY = true;
+
             Style style = dragOverlayElement.getStyle();
-            startHeight = WidgetUtil.getRequiredHeight(getElement());
             startClientY = WidgetUtil.getTouchOrMouseClientY(event);
             style.setHeight(startHeight, Unit.PX);
-            startWidth = WidgetUtil.getRequiredWidth(getElement());
             startClientX = WidgetUtil.getTouchOrMouseClientX(event);
             style.setWidth(startWidth, Unit.PX);
+
             if (target.equals(topLeftCorner) || target.equals(topRightCorner)) {
                 revertY = true;
                 style.setBottom(0, Unit.PX);
@@ -611,9 +672,9 @@ public class ResizableVCssLayout extends VCssLayout implements
             ResizeLocation resizeLocation;
             resizingY = true;
             Style style = dragOverlayElement.getStyle();
-            startHeight = WidgetUtil.getRequiredHeight(getElement());
             startClientY = WidgetUtil.getTouchOrMouseClientY(event);
             style.setHeight(startHeight, Unit.PX);
+
             if (target.equals(topSide)) {
                 revertY = true;
                 style.setBottom(0, Unit.PX);
@@ -632,9 +693,9 @@ public class ResizableVCssLayout extends VCssLayout implements
             ResizeLocation resizeLocation;
             resizingX = true;
             Style style = dragOverlayElement.getStyle();
-            startWidth = WidgetUtil.getRequiredWidth(getElement());
             startClientX = WidgetUtil.getTouchOrMouseClientX(event);
             style.setWidth(startWidth, Unit.PX);
+
             if (target.equals(leftSide)) {
                 revertX = true;
                 style.setRight(0, Unit.PX);

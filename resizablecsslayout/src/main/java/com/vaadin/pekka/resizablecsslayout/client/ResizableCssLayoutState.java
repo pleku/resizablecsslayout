@@ -27,4 +27,8 @@ public class ResizableCssLayoutState extends
     @NoLayout
     @DelegateToWidget
     public ArrayList<ResizeLocation> resizeLocations = new ArrayList<ResizeLocation>();
+
+    @NoLayout
+    @DelegateToWidget
+    public boolean keepAspectRatio;
 }

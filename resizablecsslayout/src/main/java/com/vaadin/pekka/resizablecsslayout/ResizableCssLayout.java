@@ -413,6 +413,28 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
                 ResizeLocation.BOTTOM, ResizeLocation.LEFT);
     }
 
+    /**
+     * Set the component to keep or not to keep the original (current) aspect
+     * ratio when the user starts the resizing.
+     * <p>
+     * Default is <code>false</code>.
+     */
+    public void setKeepAspectRatio(boolean keepAspectRatio) {
+        if (getState(false).keepAspectRatio != keepAspectRatio) {
+            getState().keepAspectRatio = keepAspectRatio;
+        }
+    }
+
+    /**
+     * Returns whether the component keep the original (current) aspect ratio
+     * when the user starts the resizing.
+     * <p>
+     * Default is <code>false</code>.
+     */
+    public boolean isKeepAspectRatio() {
+        return getState(false).keepAspectRatio;
+    }
+
     @Override
     public ResizableCssLayoutState getState() {
         return (ResizableCssLayoutState) super.getState();

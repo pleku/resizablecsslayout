@@ -151,6 +151,16 @@ public class DemoUI extends UI {
         });
         toggleResizable.setValue(true);
 
+        final CheckBox aspectRatioToggle = new CheckBox("Keep Aspect Ratio");
+        aspectRatioToggle.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                gridWrapper.setKeepAspectRatio(aspectRatioToggle.getValue());
+                formWrapper.setKeepAspectRatio(aspectRatioToggle.getValue());
+            }
+        });
+
         listenerToggle = new CheckBox("Server side listener");
         listenerToggle.addValueChangeListener(new ValueChangeListener() {
             ResizeListener listener = new ResizeListener() {
@@ -205,6 +215,7 @@ public class DemoUI extends UI {
         options.addComponent(autoAcceptResize);
         options.addComponent(cancelResizeToggle);
         options.addComponent(createResizeLocations());
+        options.addComponent(aspectRatioToggle);
         for (Component component : options) {
             options.setComponentAlignment(component, Alignment.MIDDLE_CENTER);
         }
