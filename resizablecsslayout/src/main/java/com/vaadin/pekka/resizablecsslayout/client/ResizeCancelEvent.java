@@ -3,26 +3,14 @@ package com.vaadin.pekka.resizablecsslayout.client;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * GWT event for resize start. Fired when user starts resize by pressing the
- * mouse down on the location {@link #getResizeLocation()}.
+ * GWT event for resize cancel. Fired when the user stops the resize by pressing
+ * the ESC key.
+ *
  */
-public class ResizeStartEvent extends GwtEvent<ResizableLayoutHandler> {
-
-    private final ResizeLocation resizeLocation;
-
-    public ResizeStartEvent(ResizeLocation resizeLocation) {
-        this.resizeLocation = resizeLocation;
-    }
+public class ResizeCancelEvent extends GwtEvent<ResizableLayoutHandler> {
 
     /**
-     * @return the location where this resize was started
-     */
-    public ResizeLocation getResizeLocation() {
-        return resizeLocation;
-    }
-
-    /**
-     * Event type for resize start events.
+     * Event type for resize cancel events.
      */
     private static final Type<ResizableLayoutHandler> TYPE = new Type<ResizableLayoutHandler>();
 
@@ -42,7 +30,7 @@ public class ResizeStartEvent extends GwtEvent<ResizableLayoutHandler> {
 
     @Override
     protected void dispatch(ResizableLayoutHandler handler) {
-        handler.onResizeStart(this);
+        handler.onResizeCancel(this);
     }
 
 }

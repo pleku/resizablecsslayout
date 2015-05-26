@@ -32,13 +32,12 @@ public class ResizeEndEvent extends GwtEvent<ResizableLayoutHandler> {
     }
 
     /**
-     * Event type for click events. Represents the meta-data associated with
-     * this event.
+     * Event type for resize end events.
      */
     private static final Type<ResizableLayoutHandler> TYPE = new Type<ResizableLayoutHandler>();
 
     /**
-     * Gets the event type associated with click events.
+     * Gets the event type associated with resize end events.
      *
      * @return the handler type
      */

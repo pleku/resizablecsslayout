@@ -18,4 +18,9 @@ public interface HasResizableLayoutHandlers extends HasHandlers {
      * Adds a handler for {@link ResizeEndEvent} to this widget.
      */
     HandlerRegistration addResizeEndHandler(ResizableLayoutHandler handler);
+
+    /**
+     * Adds a handler for {@link ResizeCancelEvent} to this widget.
+     */
+    HandlerRegistration addResizeCancelHandler(ResizableLayoutHandler handler);
 }

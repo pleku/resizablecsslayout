@@ -24,6 +24,7 @@ public class ResizableCssLayoutConnector extends CssLayoutConnector implements
         super.init();
         getWidget().addResizeStartHandler(this);
         getWidget().addResizeEndHandler(this);
+        getWidget().addResizeCancelHandler(this);
         registerRpc(ResizableCssLayoutClientRpc.class,
                 new ResizableCssLayoutClientRpc() {
 
@@ -83,6 +84,11 @@ public class ResizableCssLayoutConnector extends CssLayoutConnector implements
     @Override
     public void onResizeEnd(ResizeEndEvent event) {
         rpc.onResizeEnd(event.getHeight(), event.getWidth());
+    }
+
+    @Override
+    public void onResizeCancel(ResizeCancelEvent resizeCancelEvent) {
+        rpc.onResizeCancel();
     }
 
 }

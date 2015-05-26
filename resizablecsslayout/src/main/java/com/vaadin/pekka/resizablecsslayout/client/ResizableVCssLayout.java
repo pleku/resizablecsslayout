@@ -10,10 +10,14 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.VCssLayout;
@@ -313,12 +317,22 @@ public class ResizableVCssLayout extends VCssLayout implements
         return addHandler(handler, ResizeEndEvent.getType());
     }
 
+    @Override
+    public HandlerRegistration addResizeCancelHandler(
+            ResizableLayoutHandler handler) {
+        return addHandler(handler, ResizeCancelEvent.getType());
+    }
+
     protected void fireResizeEnd(int clientWidth, int clientHeight) {
         fireEvent(new ResizeEndEvent(clientHeight, clientWidth));
     }
 
     protected void fireResizeStart(ResizeLocation resizeLocation) {
         fireEvent(new ResizeStartEvent(resizeLocation));
+    }
+
+    protected void fireResizeCancel() {
+        fireEvent(new ResizeCancelEvent());
     }
 
     protected class ResizeHandler implements EventListener {
@@ -333,6 +347,8 @@ public class ResizableVCssLayout extends VCssLayout implements
         private boolean resizingY;
         private Element draggedElement;
         private boolean waitingAccept;
+        private HandlerRegistration cancelListenerRegistration;
+        private boolean resizeCanceled;
 
         @Override
         public void onBrowserEvent(Event event) {
@@ -357,6 +373,9 @@ public class ResizableVCssLayout extends VCssLayout implements
                 default:
                     break;
                 }
+            } else if (resizeCanceled && event.getTypeInt() == Event.ONMOUSEUP) {
+                event.preventDefault();
+                event.stopPropagation();
             }
         }
 
@@ -479,12 +498,16 @@ public class ResizableVCssLayout extends VCssLayout implements
                 resizingX = false;
                 resizingY = false;
                 waitingAccept = true;
+
                 Event.releaseCapture(draggedElement);
                 event.stopPropagation();
+
                 stopCursorOverride();
                 unmarkBoundaryResizing();
+
                 fireResizeEnd(WidgetUtil.getRequiredWidth(dragOverlayElement),
                         WidgetUtil.getRequiredHeight(dragOverlayElement));
+
                 if (autoAcceptResize) {
                     acceptResize(true);
                 }
@@ -493,8 +516,10 @@ public class ResizableVCssLayout extends VCssLayout implements
 
         private void onResizeStart(Event event, Element target) {
             if (!(resizingX || resizingY || waitingAccept)) {
+                resizeCanceled = false;
                 draggedElement = target;
                 ResizeLocation resizeLocation;
+
                 if (target.equals(topSide) || target.equals(bottomSide)) {
                     resizeLocation = startVerticalResize(event, target);
                 } else if (target.equals(leftSide) || target.equals(rightSide)) {
@@ -502,14 +527,52 @@ public class ResizableVCssLayout extends VCssLayout implements
                 } else {
                     resizeLocation = startDiagonalResize(event, target);
                 }
+
                 fireResizeStart(resizeLocation);
+
                 getElement().addClassName("resizing");
                 getElement().appendChild(dragOverlayElement);
-                Event.setCapture(target);
+                Event.setCapture(draggedElement);
                 event.stopPropagation();
+
                 overrideCursor(resizeLocation);
                 markBoundaryResizing();
+                listenToCancel();
             }
+        }
+
+        private void listenToCancel() {
+            cancelListenerRegistration = Event
+                    .addNativePreviewHandler(new NativePreviewHandler() {
+
+                        @Override
+                        public void onPreviewNativeEvent(
+                                NativePreviewEvent event) {
+                            if (event.getTypeInt() == Event.ONKEYDOWN
+                                    && (resizingX || resizingY)) {
+                                final int keyCode = event.getNativeEvent()
+                                        .getKeyCode();
+                                if (keyCode == KeyCodes.KEY_ESCAPE) {
+                                    onResizeCancel(event.getNativeEvent());
+                                }
+                            }
+                        }
+                    });
+        }
+
+        private void onResizeCancel(NativeEvent event) {
+            cancelListenerRegistration.removeHandler();
+            Event.releaseCapture(draggedElement);
+            event.stopPropagation();
+            event.preventDefault();
+
+            resizeCanceled = true;
+            waitingAccept = true;
+            ResizeHandler.this.acceptResize(false);
+
+            stopCursorOverride();
+            unmarkBoundaryResizing();
+            fireResizeCancel();
         }
 
         private ResizeLocation startDiagonalResize(Event event, Element target) {

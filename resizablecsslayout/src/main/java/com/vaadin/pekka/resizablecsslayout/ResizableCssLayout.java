@@ -55,6 +55,12 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
             respondResizeAcceptance();
         }
 
+        @Override
+        public void onResizeCancel() {
+            resizing = false;
+            fireResizeCancel();
+        }
+
     };
 
     /**
@@ -429,6 +435,8 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
                 ResizeListener.RESIZE_START_METHOD);
         addListener(ResizeEndEvent.class, listener,
                 ResizeListener.RESIZE_END_METHOD);
+        addListener(ResizeCancelEvent.class, listener,
+                ResizeListener.RESIZE_CANCEL_METHOD);
     }
 
     /**
@@ -448,6 +456,10 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         fireEvent(new ResizeEndEvent(this, height, width));
     }
 
+    protected void fireResizeCancel() {
+        fireEvent(new ResizeCancelEvent(this));
+    }
+
     /**
      * Interface for listening to
      * {@link com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent}
@@ -464,9 +476,15 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         public static final Method RESIZE_END_METHOD = ReflectTools.findMethod(
                 ResizeListener.class, "resizeEnd", ResizeEndEvent.class);
 
+        public static final Method RESIZE_CANCEL_METHOD = ReflectTools
+                .findMethod(ResizeListener.class, "resizeCancel",
+                        ResizeCancelEvent.class);
+
         void resizeStart(ResizeStartEvent event);
 
         void resizeEnd(ResizeEndEvent event);
+
+        void resizeCancel(ResizeCancelEvent event);
     }
 
     /**
@@ -546,5 +564,18 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         public int getWidth() {
             return width;
         }
+    }
+
+    /**
+     * Event for resize cancel, fired when the user has canceled the resize by
+     * pressing the ESC key. The resizing is no longer active and the component
+     * size has not been changed by the resize.
+     */
+    public static class ResizeCancelEvent extends Event {
+
+        public ResizeCancelEvent(Component source) {
+            super(source);
+        }
+
     }
 }

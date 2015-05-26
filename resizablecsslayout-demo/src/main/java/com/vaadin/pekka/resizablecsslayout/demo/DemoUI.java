@@ -12,6 +12,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout;
+import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeCancelEvent;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent;
@@ -176,6 +177,12 @@ public class DemoUI extends UI {
                                 + event.getWidth() + "/" + event.getHeight(),
                                 Notification.Type.TRAY_NOTIFICATION);
                     }
+                }
+
+                @Override
+                public void resizeCancel(ResizeCancelEvent event) {
+                    Notification.show("Resize Canceled",
+                            Notification.Type.TRAY_NOTIFICATION);
                 }
             };
 
