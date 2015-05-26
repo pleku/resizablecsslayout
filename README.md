@@ -52,11 +52,11 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
 ## Release notes
 
 ### Version 1.1.0
-- Support keeping aspect ratio when resizing #1
-- Fixed 1px offset error when resizing #3
-- Pressing escape should cancel the resize #4
-- Update the right/bottom coordinates when inside a AbsoluteLayout #5
-- Fixed resize handles being partly hidden behind a full-size Grid component
+- Support keeping aspect ratio when resizing <a href="https://github.com/pleku/resizablecsslayout/issues/1">#1</a>
+- Fixed 1px offset error when resizing <a href="https://github.com/pleku/resizablecsslayout/issues/3">#3</a>
+- Pressing escape should cancel the resize <a href="https://github.com/pleku/resizablecsslayout/issues/4">#4</a>
+- Update the right/bottom coordinates when inside a AbsoluteLayout <a href="https://github.com/pleku/resizablecsslayout/issues/5">#5</a>
+- Fixed resize handles being partly hidden behind a full-size Grid component <a href="https://github.com/pleku/resizablecsslayout/issues/8">#8</a>
 
 ### Version 1.0.1
 - Fixed invalid javadocs
