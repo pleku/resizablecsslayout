@@ -17,6 +17,7 @@ import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeEndEvent;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeListener;
 import com.vaadin.pekka.resizablecsslayout.ResizableCssLayout.ResizeStartEvent;
 import com.vaadin.pekka.resizablecsslayout.client.ResizeLocation;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
@@ -26,6 +27,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -42,6 +44,7 @@ public class DemoUI extends UI {
 
     private CheckBox cancelResizeToggle;
     private CheckBox listenerToggle;
+    private ResizableCssLayout imageWrapper;
 
     public enum AvailableResizeLocations {
         All, Corners, Sides, Top_Left, Top, Top_Right, Right, Bottom_Right, Bottom, Bottom_Left, Left;
@@ -64,10 +67,20 @@ public class DemoUI extends UI {
         formWrapper.setHeight("250px");
         formWrapper.setWidth("250px");
 
+        Image image = new Image(null, new ThemeResource("img/swan.jpg"));
+        image.setSizeFull();
+        imageWrapper = new ResizableCssLayout(image);
+        imageWrapper.setResizable(true);
+        imageWrapper.setKeepAspectRatio(true);
+        imageWrapper.setCaption("Image keeps aspect ratio");
+        imageWrapper.setWidth("250px");
+        imageWrapper.setHeight("167px");
+
         final AbsoluteLayout absoluteLayout = new AbsoluteLayout();
         absoluteLayout.setSizeFull();
-        absoluteLayout.addComponent(gridWrapper, "top:100px;left:100px;");
+        absoluteLayout.addComponent(gridWrapper, "top:50px; left:50px;");
         absoluteLayout.addComponent(formWrapper, "right:100px; bottom:100px;");
+        absoluteLayout.addComponent(imageWrapper, "top:50px; left:500px");
 
         HorizontalLayout options = createOptions();
 
@@ -123,6 +136,7 @@ public class DemoUI extends UI {
             public void valueChange(ValueChangeEvent event) {
                 gridWrapper.setAutoAcceptResize(autoAcceptResize.getValue());
                 formWrapper.setAutoAcceptResize(autoAcceptResize.getValue());
+                imageWrapper.setAutoAcceptResize(autoAcceptResize.getValue());
                 cancelResizeToggle.setEnabled(!autoAcceptResize.getValue());
             }
         });
@@ -141,15 +155,16 @@ public class DemoUI extends UI {
         });
 
         final CheckBox toggleResizable = new CheckBox("Toggle resizable");
+        toggleResizable.setValue(true);
         toggleResizable.addValueChangeListener(new ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
                 gridWrapper.setResizable(toggleResizable.getValue());
                 formWrapper.setResizable(toggleResizable.getValue());
+                imageWrapper.setResizable(toggleResizable.getValue());
             }
         });
-        toggleResizable.setValue(true);
 
         final CheckBox aspectRatioToggle = new CheckBox("Keep Aspect Ratio");
         aspectRatioToggle.addValueChangeListener(new ValueChangeListener() {
@@ -182,6 +197,7 @@ public class DemoUI extends UI {
                                 Notification.Type.TRAY_NOTIFICATION);
                         gridWrapper.cancelResize();
                         formWrapper.cancelResize();
+                        gridWrapper.cancelResize();
                     } else {
                         Notification.show("Resize Ended", "Width / Height: "
                                 + event.getWidth() + "/" + event.getHeight(),
@@ -201,9 +217,11 @@ public class DemoUI extends UI {
                 if (listenerToggle.getValue()) {
                     gridWrapper.addResizeListener(listener);
                     formWrapper.addResizeListener(listener);
+                    imageWrapper.addResizeListener(listener);
                 } else {
                     gridWrapper.removeResizeListener(listener);
                     formWrapper.removeResizeListener(listener);
+                    imageWrapper.removeResizeListener(listener);
                 }
             }
         });
@@ -236,24 +254,28 @@ public class DemoUI extends UI {
             public void valueChange(ValueChangeEvent event) {
                 AvailableResizeLocations value = (AvailableResizeLocations) event
                         .getProperty().getValue();
+                final ResizeLocation resizeLocation = ResizeLocation
+                        .valueOf(value.toString().toUpperCase());
                 switch (value) {
                 case All:
                     gridWrapper.setAllLocationsResizable();
                     formWrapper.setAllLocationsResizable();
+                    imageWrapper.setAllLocationsResizable();
                     break;
                 case Corners:
                     gridWrapper.setCornersResizable();
                     formWrapper.setCornersResizable();
+                    imageWrapper.setCornersResizable();
                     break;
                 case Sides:
                     gridWrapper.setSidesResizable();
                     formWrapper.setSidesResizable();
+                    imageWrapper.setCornersResizable();
                     break;
                 default:
-                    gridWrapper.setResizeLocations(ResizeLocation.valueOf(value
-                            .toString().toUpperCase()));
-                    formWrapper.setResizeLocations(ResizeLocation.valueOf(value
-                            .toString().toUpperCase()));
+                    gridWrapper.setResizeLocations(resizeLocation);
+                    formWrapper.setResizeLocations(resizeLocation);
+                    imageWrapper.setResizeLocations(resizeLocation);
                     break;
                 }
             }
