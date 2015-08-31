@@ -37,7 +37,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
     private ResizableCssLayoutServerRpc rpc = new ResizableCssLayoutServerRpc() {
         @Override
         public void onResizeStart(ResizeLocation resizeLocation, int height,
-                int width) {
+                                  int width) {
             acceptResize = true;
             latestResizeLocation = resizeLocation;
             initialHeight = height;
@@ -50,9 +50,9 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         public void onResizeEnd(int height, int width) {
             pendingHeight = height;
             pendingWidth = width;
-            fireResizeEnd(height, width);
             resizing = false;
             respondResizeAcceptance();
+            fireResizeEnd(height, width);
         }
 
         @Override
@@ -181,7 +181,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      *            the component that is inside the absolute layout
      */
     protected void moveTop(int delta, AbsoluteLayout absoluteLayout,
-            Component positionHolder) {
+                           Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
         if (position.getTopValue() != null
                 && position.getTopUnits().equals(Unit.PIXELS)) {
@@ -209,7 +209,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      *            the component that is inside the absolute layout
      */
     protected void moveBottom(int delta, AbsoluteLayout absoluteLayout,
-            Component positionHolder) {
+                              Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
         if (position.getBottomValue() != null
                 && position.getBottomUnits().equals(Unit.PIXELS)) {
@@ -236,7 +236,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      * @param positionHolder
      */
     protected void moveRight(int delta, AbsoluteLayout absoluteLayout,
-            Component positionHolder) {
+                             Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
         if (position.getRightValue() != null
                 && position.getRightUnits().equals(Unit.PIXELS)) {
@@ -264,7 +264,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
      *            the component that is inside the absolute layout
      */
     protected void moveLeft(int delta, AbsoluteLayout absoluteLayout,
-            Component positionHolder) {
+                            Component positionHolder) {
         ComponentPosition position = absoluteLayout.getPosition(positionHolder);
         if (position.getLeftValue() != null
                 && position.getLeftUnits().equals(Unit.PIXELS)) {
@@ -470,7 +470,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
     }
 
     protected void fireResizeStart(ResizeLocation resizeLocation, int height,
-            int width) {
+                                   int width) {
         fireEvent(new ResizeStartEvent(this, resizeLocation, height, width));
     }
 
@@ -520,7 +520,7 @@ public class ResizableCssLayout extends com.vaadin.ui.CssLayout {
         private final int width;
 
         public ResizeStartEvent(Component source,
-                ResizeLocation resizeLocation, int height, int width) {
+                                ResizeLocation resizeLocation, int height, int width) {
             super(source);
             this.resizeLocation = resizeLocation;
             this.height = height;
