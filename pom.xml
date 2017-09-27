@@ -5,7 +5,7 @@
 	<groupId>com.vaadin.pekka</groupId>
 	<artifactId>resizablecsslayout-root</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<name>ResizableCssLayout Add-on Root Project</name>
 
 	<modules>
