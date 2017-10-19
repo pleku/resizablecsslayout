@@ -51,6 +51,9 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
  
 ## Release notes
 
+### Version 2.0.0
+- Support for Vaadin 8
+
 ### Version 1.1.0
 - Support keeping aspect ratio when resizing <a href="https://github.com/pleku/resizablecsslayout/issues/1">#1</a>
 - Fixed 1px offset error when resizing <a href="https://github.com/pleku/resizablecsslayout/issues/3">#3</a>
