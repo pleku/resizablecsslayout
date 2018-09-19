@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/resizablecsslayout-add-on)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/resizablecsslayout-add-on.svg)](https://vaadin.com/directory/component/resizablecsslayout-add-on)
+
 # ResizableCssLayout Add-on for Vaadin 7
 
 ResizableCssLayout is an UI component add-on for Vaadin 7.
